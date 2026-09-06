@@ -1,16 +1,16 @@
 package com.udistrital.escondidas
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.core.os.LocaleListCompat
 import com.udistrital.escondidas.data.SensorRepository
+import com.udistrital.escondidas.domain.Difficulty
 import com.udistrital.escondidas.ui.GameScreen
 import com.udistrital.escondidas.ui.HowToPlayScreen
 import com.udistrital.escondidas.ui.MenuScreen
@@ -21,7 +21,7 @@ enum class Screen {
     MENU, GAME, SETTINGS, HOW_TO
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val viewModel: GameViewModel by viewModels {
         GameViewModelFactory(SensorRepository(this))
@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             var currentScreen by remember { mutableStateOf(Screen.MENU) }
+            val currentLanguage = AppCompatDelegate.getApplicationLocales().get(0)?.language ?: "es"
+            var isVibrationEnabled by remember { mutableStateOf(true) }
 
             EscondidasTheme {
                 when (currentScreen) {
@@ -42,9 +44,17 @@ class MainActivity : ComponentActivity() {
                     )
                     Screen.GAME -> GameScreen(
                         viewModel = viewModel,
+                        isVibrationEnabled = isVibrationEnabled,
                         onBackToMenu = { currentScreen = Screen.MENU }
                     )
                     Screen.SETTINGS -> SettingsScreen(
+                        currentLanguage = currentLanguage,
+                        onLanguageChange = { lang ->
+                            val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(lang)
+                            AppCompatDelegate.setApplicationLocales(appLocale)
+                        },
+                        isVibrationEnabled = isVibrationEnabled,
+                        onVibrationChange = { isVibrationEnabled = it },
                         onBack = { currentScreen = Screen.MENU }
                     )
                     Screen.HOW_TO -> HowToPlayScreen(

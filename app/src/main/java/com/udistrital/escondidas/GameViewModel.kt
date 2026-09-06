@@ -3,6 +3,7 @@ package com.udistrital.escondidas
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udistrital.escondidas.data.SensorRepository
+import com.udistrital.escondidas.domain.Difficulty
 import com.udistrital.escondidas.domain.GameConfig
 import com.udistrital.escondidas.domain.GameEngine
 import com.udistrital.escondidas.domain.GameState
@@ -16,12 +17,24 @@ import kotlinx.coroutines.launch
 
 class GameViewModel(
     private val sensorRepository: SensorRepository,
-    private val gameConfig: GameConfig = GameConfig()
+    initialConfig: GameConfig = GameConfig()
 ) : ViewModel() {
 
-    private val gameEngine = GameEngine(gameConfig)
-    private val _gameState = MutableStateFlow(GameState())
+    private var gameEngine = GameEngine(initialConfig)
+    private var gameConfig = initialConfig
+    private val _gameState = MutableStateFlow(GameState(remainingTimeSeconds = initialConfig.timeLimitSeconds))
     val gameState: StateFlow<GameState> = _gameState.asStateFlow()
+
+    fun setDifficulty(difficulty: Difficulty) {
+        val newConfig = when (difficulty) {
+            Difficulty.EASY -> GameConfig(timeLimitSeconds = 60, winToleranceDegrees = 5.0f, hotThresholdDegrees = 60.0f, warmThresholdDegrees = 100.0f, coldThresholdDegrees = 150.0f)
+            Difficulty.NORMAL -> GameConfig(timeLimitSeconds = 45, winToleranceDegrees = 3.0f, hotThresholdDegrees = 40.0f, warmThresholdDegrees = 70.0f, coldThresholdDegrees = 110.0f)
+            Difficulty.HARD -> GameConfig(timeLimitSeconds = 30, winToleranceDegrees = 2.0f, hotThresholdDegrees = 20.0f, warmThresholdDegrees = 45.0f, coldThresholdDegrees = 80.0f)
+        }
+        gameConfig = newConfig
+        gameEngine = GameEngine(newConfig)
+        resetGame()
+    }
 
     private var timerJob: Job? = null
     private var sensorJob: Job? = null

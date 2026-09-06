@@ -6,32 +6,97 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.udistrital.escondidas.R
+import com.udistrital.escondidas.domain.Difficulty
 
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
-    InfoScreenTemplate(title = "Ajustes", onBack = onBack) {
-        Text("Aquí irán los ajustes del juego (sensibilidad, tiempo, etc).")
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Por ahora, el juego usa la configuración por defecto.")
+fun SettingsScreen(
+    currentLanguage: String,
+    onLanguageChange: (String) -> Unit,
+    isVibrationEnabled: Boolean,
+    onVibrationChange: (Boolean) -> Unit,
+    onBack: () -> Unit
+) {
+    InfoScreenTemplate(title = stringResource(id = R.string.settings_title), onBack = onBack) {
+        Text(
+            text = stringResource(id = R.string.settings_language),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+        
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LanguageOption("Español", "es", currentLanguage == "es") { onLanguageChange("es") }
+            LanguageOption("English", "en", currentLanguage == "en") { onLanguageChange("en") }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.settings_vibration),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Switch(
+                checked = isVibrationEnabled,
+                onCheckedChange = onVibrationChange
+            )
+        }
     }
 }
 
 @Composable
+fun DifficultyOption(label: String, difficulty: Difficulty, isSelected: Boolean, onClick: () -> Unit) {
+    FilterChip(
+        selected = isSelected,
+        onClick = onClick,
+        label = { Text(label) }
+    )
+}
+
+@Composable
+fun LanguageOption(label: String, code: String, isSelected: Boolean, onClick: () -> Unit) {
+    FilterChip(
+        selected = isSelected,
+        onClick = onClick,
+        label = { Text(label) }
+    )
+}
+
+@Composable
 fun HowToPlayScreen(onBack: () -> Unit) {
-    InfoScreenTemplate(title = "¿Cómo se juega?", onBack = onBack) {
-        Text("1. Presiona 'Nueva Partida'.", fontWeight = FontWeight.Bold)
-        Text("2. Mueve tu dispositivo para encontrar el ángulo correcto.")
-        Text("3. El color cambiará según qué tan cerca estés:")
-        Text("   - Azul: Muy Frío", color = MaterialTheme.colorScheme.primary)
-        Text("   - Amarillo: Tibio")
-        Text("   - Rojo: Caliente", color = MaterialTheme.colorScheme.error)
-        Text("4. Encuentra el punto exacto antes de que el tiempo se agote.")
+    InfoScreenTemplate(title = stringResource(id = R.string.how_to_play_title), onBack = onBack) {
+        val steps = listOf(
+            R.string.step_1,
+            R.string.step_2,
+            R.string.step_3,
+            R.string.step_3_a,
+            R.string.step_3_b,
+            R.string.step_3_c,
+            R.string.step_4
+        )
+        
+        steps.forEach { stepRes ->
+            Text(
+                text = stringResource(id = stepRes),
+                modifier = Modifier.padding(vertical = 4.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }
 
@@ -48,7 +113,7 @@ fun InfoScreenTemplate(
                 title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }
             )

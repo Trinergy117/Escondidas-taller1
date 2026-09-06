@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.udistrital.escondidas.R
@@ -37,30 +39,31 @@ fun MenuScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-                    contentDescription = "Logo del Juego",
+                    contentDescription = stringResource(id = R.string.app_name),
                     modifier = Modifier
                         .size(120.dp)
                         .padding(bottom = 16.dp)
                 )
 
                 Text(
-                    text = "ESCONDIDAS",
+                    text = stringResource(id = R.string.menu_title),
                     fontSize = 44.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary,
                     letterSpacing = 4.sp
                 )
                 Text(
-                    text = "Bienvenido, encuentra al personaje antes de que acabe el tiempo!",
+                    text = stringResource(id = R.string.menu_welcome),
                     fontSize = 16.sp,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(64.dp))
 
                 MenuButton(
-                    text = "Nueva Partida",
+                    text = stringResource(id = R.string.menu_new_game),
                     icon = Icons.Default.PlayArrow,
                     onClick = onNavigateToGame
                 )
@@ -68,7 +71,7 @@ fun MenuScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 MenuButton(
-                    text = "Ajustes",
+                    text = stringResource(id = R.string.menu_settings),
                     icon = Icons.Default.Settings,
                     onClick = onNavigateToSettings
                 )
@@ -76,7 +79,7 @@ fun MenuScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 MenuButton(
-                    text = "Cómo se juega",
+                    text = stringResource(id = R.string.menu_how_to_play),
                     icon = Icons.Default.Info,
                     onClick = onNavigateToHowToPlay
                 )
