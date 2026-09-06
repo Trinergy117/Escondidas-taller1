@@ -3,6 +3,8 @@ package com.udistrital.escondidas.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,30 +20,53 @@ import com.udistrital.escondidas.GameViewModel
 import com.udistrital.escondidas.domain.GameState
 import com.udistrital.escondidas.domain.TemperatureState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreen(viewModel: GameViewModel, modifier: Modifier = Modifier) {
+fun GameScreen(
+    viewModel: GameViewModel,
+    onBackToMenu: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val state by viewModel.gameState.collectAsState()
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            GameHeader(state)
-            
-            GameIndicator(state)
-
-            GameControls(state, onStart = { viewModel.startNewGame() })
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = { },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        viewModel.stopGameSession()
+                        onBackToMenu()
+                    }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver al menú")
+                    }
+                }
+            )
         }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding)
+                .padding(24.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                GameHeader(state)
 
-        if (state.isGameOver) {
-            GameOverDialog(state, onRestart = { viewModel.startNewGame() })
+                GameIndicator(state)
+
+                GameControls(state, onStart = { viewModel.startNewGame() })
+            }
+
+            if (state.isGameOver) {
+                GameOverDialog(state, onRestart = { viewModel.startNewGame() })
+            }
         }
     }
 }
@@ -76,7 +101,7 @@ fun StatusItem(label: String, value: String) {
 @Composable
 fun GameIndicator(state: GameState) {
     val color = Color(android.graphics.Color.parseColor(state.temperatureState.colorHex))
-    
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
