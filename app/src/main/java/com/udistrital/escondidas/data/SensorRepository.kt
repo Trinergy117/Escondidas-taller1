@@ -29,7 +29,7 @@ class SensorRepository(context: Context) {
         var hasGravity = false
         var hasGeomagnetic = false
 
-        val ALPHA = 0.15f // Coeficiente del filtro pasa-bajos
+        val ALPHA = 0.15f // Coeficiente del filtro pasa-bajos, sensibilidad de la brujula
 
         fun lowPass(input: FloatArray, output: FloatArray) {
             for (i in input.indices) {
