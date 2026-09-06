@@ -34,25 +34,22 @@ class MainActivity : ComponentActivity() {
             var currentScreen by remember { mutableStateOf(Screen.MENU) }
 
             EscondidasTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    when (currentScreen) {
-                        Screen.MENU -> MenuScreen(
-                            onNavigateToGame = { currentScreen = Screen.GAME },
-                            onNavigateToSettings = { currentScreen = Screen.SETTINGS },
-                            onNavigateToHowToPlay = { currentScreen = Screen.HOW_TO }
-                        )
-                        Screen.GAME -> GameScreen(
-                            viewModel = viewModel,
-                            onBackToMenu = { currentScreen = Screen.MENU },
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                        Screen.SETTINGS -> SettingsScreen(
-                            onBack = { currentScreen = Screen.MENU }
-                        )
-                        Screen.HOW_TO -> HowToPlayScreen(
-                            onBack = { currentScreen = Screen.MENU }
-                        )
-                    }
+                when (currentScreen) {
+                    Screen.MENU -> MenuScreen(
+                        onNavigateToGame = { currentScreen = Screen.GAME },
+                        onNavigateToSettings = { currentScreen = Screen.SETTINGS },
+                        onNavigateToHowToPlay = { currentScreen = Screen.HOW_TO }
+                    )
+                    Screen.GAME -> GameScreen(
+                        viewModel = viewModel,
+                        onBackToMenu = { currentScreen = Screen.MENU }
+                    )
+                    Screen.SETTINGS -> SettingsScreen(
+                        onBack = { currentScreen = Screen.MENU }
+                    )
+                    Screen.HOW_TO -> HowToPlayScreen(
+                        onBack = { currentScreen = Screen.MENU }
+                    )
                 }
             }
         }

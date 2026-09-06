@@ -39,7 +39,7 @@ fun MenuScreen(
                 letterSpacing = 4.sp
             )
             Text(
-                text = "Búsqueda por Sensores",
+                text = "Bienvenido, encuentra al personaje antes de que acabe el tiempo!",
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.secondary

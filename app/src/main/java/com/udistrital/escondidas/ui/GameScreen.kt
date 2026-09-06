@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,14 +27,14 @@ fun GameScreen(
     viewModel: GameViewModel,
     onBackToMenu: () -> Unit,
     modifier: Modifier = Modifier
-) {
+){
     val state by viewModel.gameState.collectAsState()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { },
+                title = { Text("Encuentra al personaje", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.stopGameSession()
@@ -41,23 +42,40 @@ fun GameScreen(
                     }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver al menú")
                     }
+                },
+                actions = {
+                    // Tiempo y Puntaje en el TopBar
+                    StatusItemTopBar("⏳ ${state.remainingTimeSeconds}s")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    StatusItemTopBar("🏆 ${state.score}")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    
+                    IconButton(onClick = { viewModel.resetGame() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Reiniciar partida")
+                    }
                 }
             )
         }
-    ) { innerPadding ->
+    ){ innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .padding(24.dp)
-        ) {
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ){
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                GameHeader(state)
+            ){
+                Text(
+                    text = "Muévete y gira tu teléfono para encontrar el objetivo",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
 
                 GameIndicator(state)
 
@@ -65,36 +83,30 @@ fun GameScreen(
             }
 
             if (state.isGameOver) {
-                GameOverDialog(state, onRestart = { viewModel.startNewGame() })
+                GameOverDialog(
+                    state = state, 
+                    onRestart = { viewModel.startNewGame() },
+                    onBackToMenu = onBackToMenu
+                )
             }
         }
     }
 }
 
 @Composable
-fun GameHeader(state: GameState) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun StatusItemTopBar(text: String) {
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer,
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier.padding(vertical = 4.dp)
+    ) {
         Text(
-            text = "Encuentra el objetivo",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            text = text,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            StatusItem("Tiempo", "${state.remainingTimeSeconds}s")
-            StatusItem("Puntaje", "${state.score}")
-        }
-    }
-}
-
-@Composable
-fun StatusItem(label: String, value: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.labelMedium)
-        Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
     }
 }
 
@@ -105,7 +117,7 @@ fun GameIndicator(state: GameState) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .size(200.dp)
+                .size(220.dp)
                 .background(color.copy(alpha = 0.2f), CircleShape)
                 .padding(20.dp),
             contentAlignment = Alignment.Center
@@ -120,15 +132,16 @@ fun GameIndicator(state: GameState) {
                     text = state.temperatureState.labelEs,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
+                    fontSize = 28.sp,
                     textAlign = TextAlign.Center
                 )
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Precisión: ${state.precisionPercentage}%",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -140,14 +153,23 @@ fun GameControls(state: GameState, onStart: () -> Unit) {
         enabled = !state.isGameActive,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(64.dp),
+        shape = MaterialTheme.shapes.large
     ) {
-        Text(text = if (state.isGameOver) "Reiniciar Juego" else "Comenzar Búsqueda")
+        Text(
+            text = if (state.isGameOver) "Jugar de nuevo" else "Comenzar Búsqueda",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
 @Composable
-fun GameOverDialog(state: GameState, onRestart: () -> Unit) {
+fun GameOverDialog(
+    state: GameState, 
+    onRestart: () -> Unit,
+    onBackToMenu: () -> Unit
+) {
     AlertDialog(
         onDismissRequest = { },
         title = {
@@ -163,11 +185,17 @@ fun GameOverDialog(state: GameState, onRestart: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Puntaje Final: ${state.score}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 Text(text = "Precisión: ${state.precisionPercentage}%")
+                Text(text = "Tiempo total: ${state.remainingTimeSeconds}")
             }
         },
         confirmButton = {
-            TextButton(onClick = onRestart) {
+            Button(onClick = onRestart) {
                 Text("Jugar de nuevo")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onBackToMenu) {
+                Text("Volver al menú")
             }
         }
     )

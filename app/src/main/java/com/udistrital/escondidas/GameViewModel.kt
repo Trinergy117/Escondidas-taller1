@@ -38,6 +38,13 @@ class GameViewModel(
         subscribeToSensors()
     }
 
+    fun resetGame() {
+        stopGameSession()
+        _gameState.value = GameState(
+            remainingTimeSeconds = gameConfig.timeLimitSeconds
+        )
+    }
+
     private fun startTimer() {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {

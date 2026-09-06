@@ -17,7 +17,7 @@ class SensorRepository(context: Context) {
 
     fun getOrientationFlow(): Flow<Float> = callbackFlow {
         if (accelerometer == null || magnetometer == null) {
-            close(IllegalStateException("El dispositivo no cuenta con acelerómetro o magnetómetro."))
+            close(IllegalStateException("El dispositivo no cuenta con acelerómetro y/o magnetómetro."))
             return@callbackFlow
         }
 
