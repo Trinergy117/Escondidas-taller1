@@ -57,37 +57,39 @@ fun GameScreen(
             )
         }
     ){ innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-        ){
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+        BlurredBackground {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
+                    .padding(innerPadding)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
             ){
-                Text(
-                    text = "Muévete y gira tu teléfono para encontrar el objetivo",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ){
+                    Text(
+                        text = "Muévete y gira tu teléfono para encontrar el objetivo",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
 
-                GameIndicator(state)
+                    GameIndicator(state)
 
-                GameControls(state, onStart = { viewModel.startNewGame() })
-            }
+                    GameControls(state, onStart = { viewModel.startNewGame() })
+                }
 
-            if (state.isGameOver) {
-                GameOverDialog(
-                    state = state, 
-                    onRestart = { viewModel.startNewGame() },
-                    onBackToMenu = onBackToMenu
-                )
+                if (state.isGameOver) {
+                    GameOverDialog(
+                        state = state, 
+                        onRestart = { viewModel.startNewGame() },
+                        onBackToMenu = onBackToMenu
+                    )
+                }
             }
         }
     }
@@ -185,7 +187,9 @@ fun GameOverDialog(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Puntaje Final: ${state.score}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 Text(text = "Precisión: ${state.precisionPercentage}%")
-                Text(text = "Tiempo total: ${state.remainingTimeSeconds}")
+                Text(text = "Tiempo: ${state.timeElapsedSeconds}s")
+                Text(text = "Rumbo: ${state.currentAzimuth.toInt()}°")
+                Text(text = "Margen de error: ${"%.1f".format(state.deltaAngle)}°")
             }
         },
         confirmButton = {

@@ -54,13 +54,15 @@ fun InfoScreenTemplate(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
-            content = content
-        )
+        BlurredBackground {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState()),
+                content = content
+            )
+        }
     }
 }

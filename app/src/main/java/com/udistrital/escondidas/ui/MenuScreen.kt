@@ -1,5 +1,6 @@
 package com.udistrital.escondidas.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -10,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.udistrital.escondidas.R
 
 @Composable
 fun MenuScreen(
@@ -24,50 +27,60 @@ fun MenuScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "ESCONDIDAS",
-                fontSize = 44.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary,
-                letterSpacing = 4.sp
-            )
-            Text(
-                text = "Bienvenido, encuentra al personaje antes de que acabe el tiempo!",
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary
-            )
+        BlurredBackground {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                    contentDescription = "Logo del Juego",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(bottom = 16.dp)
+                )
 
-            Spacer(modifier = Modifier.height(64.dp))
+                Text(
+                    text = "ESCONDIDAS",
+                    fontSize = 44.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 4.sp
+                )
+                Text(
+                    text = "Bienvenido, encuentra al personaje antes de que acabe el tiempo!",
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary
+                )
 
-            MenuButton(
-                text = "Nueva Partida",
-                icon = Icons.Default.PlayArrow,
-                onClick = onNavigateToGame
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            MenuButton(
-                text = "Ajustes",
-                icon = Icons.Default.Settings,
-                onClick = onNavigateToSettings
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            MenuButton(
-                text = "Cómo se juega",
-                icon = Icons.Default.Info,
-                onClick = onNavigateToHowToPlay
-            )
+                Spacer(modifier = Modifier.height(64.dp))
+
+                MenuButton(
+                    text = "Nueva Partida",
+                    icon = Icons.Default.PlayArrow,
+                    onClick = onNavigateToGame
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                MenuButton(
+                    text = "Ajustes",
+                    icon = Icons.Default.Settings,
+                    onClick = onNavigateToSettings
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                MenuButton(
+                    text = "Cómo se juega",
+                    icon = Icons.Default.Info,
+                    onClick = onNavigateToHowToPlay
+                )
+            }
         }
     }
 }
