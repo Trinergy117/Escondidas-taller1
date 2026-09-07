@@ -40,4 +40,5 @@
     <string name="temp_hot">Hot</string>
     <string name="temp_found">Found!</string>
     <string name="back">Back</string>
+    <string name="developed_by">Developed by: \n [Angel Estupiñan - David Vaca]</string>
 </resources>

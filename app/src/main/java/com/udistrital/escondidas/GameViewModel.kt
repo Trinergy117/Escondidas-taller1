@@ -40,10 +40,12 @@ class GameViewModel(
     private var sensorJob: Job? = null
 
     fun startNewGame() {
+        val currentAzimuth = _gameState.value.currentAzimuth
         stopGameSession()
-        val target = gameEngine.generateRandomTarget()
+        val target = gameEngine.generateRandomTarget(currentAzimuth)
         _gameState.value = GameState(
             targetAzimuth = target,
+            currentAzimuth = currentAzimuth,
             remainingTimeSeconds = gameConfig.timeLimitSeconds,
             isGameActive = true
         )
@@ -52,8 +54,10 @@ class GameViewModel(
     }
 
     fun resetGame() {
+        val currentAzimuth = _gameState.value.currentAzimuth
         stopGameSession()
         _gameState.value = GameState(
+            currentAzimuth = currentAzimuth,
             remainingTimeSeconds = gameConfig.timeLimitSeconds
         )
     }

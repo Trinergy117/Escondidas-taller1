@@ -57,7 +57,7 @@ fun GameScreen(
         if (isVibrationEnabled) {
             when (state.temperatureState) {
                 TemperatureState.HOT -> {
-                    // Vibración constante suave (bucle)
+                    // Vibración constante suave (bucle) para el estado "hot"
                     val pattern = longArrayOf(0, 200, 200) 
                     val amplitudes = intArrayOf(0, 40, 0) 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -68,7 +68,7 @@ fun GameScreen(
                     }
                 }
                 TemperatureState.FOUND -> {
-                    // Vibración fuerte y única para la victoria
+                    // Vibración fuerte y única cuando se gana
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         vibrator.vibrate(VibrationEffect.createOneShot(600, 255))
                     } else {

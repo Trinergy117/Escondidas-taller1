@@ -39,5 +39,14 @@ class GameEngine(val config: GameConfig = GameConfig()) {
         return baseScore + timeBonus + precisionBonus
     }
 
-    fun generateRandomTarget(): Float = (0..359).random().toFloat()
+    fun generateRandomTarget(currentAzimuth: Float = 0.0f): Float {
+        val minDistance = 100.0f // Asegurar al menos 100 grados de distancia inicial
+        var newTarget: Float
+        var attempts = 0
+        do {
+            newTarget = (0..359).random().toFloat()
+            attempts++
+        } while (calculateAngularDelta(currentAzimuth, newTarget) < minDistance && attempts < 100)
+        return newTarget
+    }
 }
