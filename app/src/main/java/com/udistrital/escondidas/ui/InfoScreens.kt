@@ -1,7 +1,9 @@
 package com.udistrital.escondidas.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -9,6 +11,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -81,24 +86,39 @@ fun LanguageOption(label: String, code: String, isSelected: Boolean, onClick: ()
 fun HowToPlayScreen(onBack: () -> Unit) {
     InfoScreenTemplate(title = stringResource(id = R.string.how_to_play_title), onBack = onBack) {
         val steps = listOf(
-            R.string.step_1,
-            R.string.step_2,
-            R.string.step_3,
-            R.string.step_3_a,
-            R.string.step_3_b,
-            R.string.step_3_c,
-            R.string.step_4
+            StepData(R.string.step_1, R.raw.step_1),
+            StepData(R.string.step_2, R.raw.step_2),
+            StepData(R.string.step_2_a, R.raw.step_2_1),
+            StepData(R.string.step_2_b, R.raw.step_2_2),
+            StepData(R.string.step_2_c, R.raw.step_2_3),
+            StepData(R.string.step_2_d, R.raw.step_2_4),
+            StepData(R.string.step_3, R.raw.step_3),
+            StepData(R.string.step_4, R.raw.step_4)
         )
-        
-        steps.forEach { stepRes ->
+
+        steps.forEach { step ->
             Text(
-                text = stringResource(id = stepRes),
+                text = stringResource(id = step.textRes),
                 modifier = Modifier.padding(vertical = 4.dp),
                 style = MaterialTheme.typography.bodyLarge
             )
+            step.imageRes?.let { imageRes ->
+                Image(
+                    painter = painterResource(id = imageRes),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(vertical = 8.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
     }
 }
+
+private data class StepData(val textRes: Int, val imageRes: Int?)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
